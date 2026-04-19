@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>smART Hub Living Labs - UEH</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. COLORS & BASE --- */
+        :root {
+            --color-cream: #e8e4db;
+            --color-moss: #b2c09c;
+            --color-teal: #597a5c;
+            --color-deep: #1a392e;
+            --text-dark: #1a3028;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; scroll-snap-type: y mandatory; height: 100vh; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('C:/Users/Admin/Documents/Web/images/index/gradiant noise 5.png');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            overflow-x: hidden; background-color: var(--color-deep);
+        }
+
+        .content-limit { max-width: 1200px; width: 92%; margin: 0 auto; position: relative; z-index: 10; }
+
+        /* --- 2. HEADER & NAVIGATION HOVER EFFECT --- */
+        .header-wrapper { 
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 30px 5%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+            z-index: 9999; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .header-wrapper.scrolled {
+            padding: 12px 5%; background: rgba(232, 228, 219, 0.75); 
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border-bottom: 1px solid rgba(26, 57, 46, 0.08);
+        }
+        .logo-group { display: flex; align-items: center; gap: 15px; }
+        .logo-group img { height: 40px; transition: 0.5s; }
+        .header-wrapper.scrolled .logo-group img { height: 32px; filter: brightness(0); }
+        .logo-text-box { display: flex; flex-direction: column; line-height: 1.1; }
+        .logo-main { font-weight: 800; font-size: 20px; color: white; }
+        .logo-sub { font-weight: 300; font-size: 14px; color: white; opacity: 0.9; }
+        .header-wrapper.scrolled .logo-main, .header-wrapper.scrolled .logo-sub { color: var(--text-dark); }
+
+        .nav-pill {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 100px; padding: 6px; display: flex; gap: 5px;
+        }
+        .header-wrapper.scrolled .nav-pill { background: rgba(26, 57, 46, 0.05); border-color: rgba(26, 57, 46, 0.1); }
+        
+        .nav-pill a { 
+            color: white; text-decoration: none; font-size: 13px; font-weight: 500; 
+            padding: 8px 18px; border-radius: 50px; transition: all 0.4s ease;
+            position: relative;
+        }
+        .header-wrapper.scrolled .nav-pill a { color: var(--text-dark); }
+
+        .nav-pill a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .header-wrapper.scrolled .nav-pill a:hover {
+            background: white;
+            box-shadow: 0 4px 15px rgba(26, 57, 46, 0.1);
+        }
+
+        .header-right { display: flex; justify-content: flex-end; }
+        .search-box {
+            display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px; border-radius: 50px; transition: 0.5s;
+        }
+        .header-wrapper.scrolled .search-box { background: rgba(26, 57, 46, 0.05); color: var(--text-dark); }
+        .search-box input { background: transparent; border: none; outline: none; color: inherit; width: 100px; font-size: 14px; }
+
+        /* --- SIDE NAVIGATION --- */
+        .side-nav {
+            position: fixed; left: 40px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 15px; z-index: 999;
+        }
+        .side-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3); transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer; text-decoration: none;
+        }
+        .side-dot.active { width: 35px; height: 12px; border-radius: 20px; background: white; }
+        .side-nav.dark-mode .side-dot { background: rgba(26, 57, 46, 0.2); }
+        .side-nav.dark-mode .side-dot.active { background: var(--color-deep); }
+
+        /* --- 3. PAGE SECTIONS & BLOBS --- */
+        .blob-bg {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1;
+            filter: blur(90px); opacity: 0.45; pointer-events: none;
+        }
+        .blob { position: absolute; border-radius: 50%; animation: float 18s infinite alternate ease-in-out; }
+        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(120px, 60px) scale(1.1); } }
+
+        .page-section {
+            height: 100vh; width: 100%; display: flex; flex-direction: column; justify-content: center;
+            scroll-snap-align: start; scroll-snap-stop: always; position: relative; overflow: hidden;
+        }
+        #hero { background: transparent; }
+        #about { background: rgba(232, 228, 219, 0.88); backdrop-filter: blur(15px); color: var(--text-dark); }
+        #consortium { background: rgba(178, 192, 156, 0.92); backdrop-filter: blur(15px); color: var(--text-dark); }
+        #publication { background: rgba(150, 165, 140, 0.92); backdrop-filter: blur(15px); color: white; }
+        #events { background: rgba(89, 122, 92, 0.92); backdrop-filter: blur(15px); color: white; }
+        #package-detail { background: rgba(60, 90, 70, 0.92); backdrop-filter: blur(15px); color: white; }
+        #workspace { background: rgba(26, 57, 46, 0.94); backdrop-filter: blur(15px); color: white; }
+        #contact { background: #fafaf8; color: var(--color-deep); }
+
+        /* --- 4. REVEAL ANIMATION --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
+
+        .section-title { font-size: 42px; font-weight: 800; margin-bottom: 25px; letter-spacing: -1.5px; }
+        .grid-2 { display: grid; grid-template-columns: 1.1fr 1.1fr; gap: 60px; align-items: start; }
+        .content-p { font-size: 15px; line-height: 1.75; margin-bottom: 18px; text-align: justify; }
+
+        /* Detail Grids */
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .detail-item { border-left: 1px solid rgba(255,255,255,0.2); padding-left: 20px; }
+        .detail-item h4 { font-size: 18px; color: var(--color-moss); margin-bottom: 8px; }
+
+        /* Slideshow Hero */
+        .hero-slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: 1.5s; text-align: center; }
+        .hero-slide.active { opacity: 1; }
+        .hero-title { font-size: 100px; font-weight: 800; letter-spacing: -5px; color: white; text-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .dot-nav { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 20; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.3s; }
+        .dot.active { background: white; width: 25px; border-radius: 10px; }
+
+        /* TRACKS & CARDS */
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+        .sidebar-layout { display: grid; grid-template-columns: 220px 1fr; gap: 40px; align-items: start; }
+        .year-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .year-item { font-size: 16px; font-weight: 500; cursor: pointer; opacity: 0.6; transition: 0.3s; display: flex; align-items: center; gap: 8px; color: inherit; }
+        .year-item:hover, .year-item.active { opacity: 1; transform: translateX(8px); font-weight: 700; }
+        .year-item::before { content: "→"; font-size: 14px; }
+
+        /* Fix lỗi cắt ô khi nổi lên bằng cách thêm padding cho vùng hiển thị */
+        .display-area { overflow: hidden; padding: 30px 0; margin-top: -30px; }
+        
+        .track { display: flex; gap: 20px; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); width: max-content; }
+        
+        .card { 
+            width: 240px; background: var(--color-deep); padding: 25px; border-radius: 20px; color: white; 
+            text-align: left; min-height: 350px; display: flex; flex-direction: column; justify-content: flex-end; 
+            border: 1px solid rgba(255,255,255,0.08); transition: all 0.7s ease;
+            opacity: 0; transform: translateY(40px);
+        }
+        .card.appear { opacity: 1; transform: translateY(0); }
+        .card:hover { transform: translateY(-15px); background: #1f4538; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; line-height: 1.4; }
+
+        .btn-circle { width: 40px; height: 40px; border-radius: 50%; border: 1px solid white; background: transparent; color: white; cursor: pointer; transition: 0.3s; }
+
+        /* VISUAL WORKSPACE */
+        .workspace-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: end; margin-top: 10px; }
+        .ws-item-wf { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .package-icon {
+            width: 300px; height: 300px; object-fit: contain; margin-bottom: 15px;
+            filter: brightness(0) invert(1); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+        }
+        .package-icon:hover { transform: scale(1.1) rotate(2deg); filter: brightness(1) invert(1) drop-shadow(0 0 25px rgba(255, 255, 255, 0.4)); }
+        .ws-label { font-size: 12px; line-height: 1.4; color: white; text-align: center; }
+        .ws-label strong { display: block; font-size: 15px; margin-bottom: 5px; color: var(--color-moss); }
+
+        .bounce-arrow { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); animation: bounce 2s infinite; color: white; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);} 40% {transform: translateY(-10px) translateX(-50%);} }
+
+        /* --- FOOTER LAYOUT --- */
+        #contact .footer-layout {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 100px;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            align-items: center; 
+        }
+
+        .newsletter-box h4 { font-size: 24px; font-weight: 700; margin-bottom: 10px; color: var(--color-deep); }
+        .newsletter-box p { font-size: 14px; opacity: 0.7; margin-bottom: 30px; line-height: 1.6; }
+
+        .contact-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full-width { grid-column: span 2; }
+        .form-group label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; }
+        .form-group input { 
+            width: 100%; padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(26, 57, 46, 0.1); 
+            background: white; outline: none; font-size: 14px; transition: 0.3s;
+        }
+        .form-group input:focus { border-color: var(--color-teal); box-shadow: 0 5px 15px rgba(26, 57, 46, 0.05); }
+
+        .btn-submit-large { 
+            grid-column: span 2; background: var(--color-deep); color: white; border: none; 
+            padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 600; 
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-submit-large:hover { background: var(--color-teal); transform: translateY(-2px); }
+
+        .logo-belt-wrapper {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: var(--color-deep);
+            padding: 25px 0;
+        }
+        .logo-belt { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+        .logo-belt img {
+            height: 32px; width: auto; max-width: 100px;
+            object-fit: contain; opacity: 0.9; transition: 0.3s;
+            filter: grayscale(1) brightness(2);
+        }
+        .logo-belt img:hover { opacity: 1; transform: scale(1.1); filter: grayscale(0) brightness(1.2); }
+    </style>
+</head>
+<body>
+
+    <nav class="side-nav" id="sideNav">
+        <a href="#hero" class="side-dot active"></a>
+        <a href="#about" class="side-dot"></a>
+        <a href="#consortium" class="side-dot"></a>
+        <a href="#publication" class="side-dot"></a>
+        <a href="#events" class="side-dot"></a>
+        <a href="#package-detail" class="side-dot"></a>
+        <a href="#workspace" class="side-dot"></a>
+        <a href="#contact" class="side-dot"></a>
+    </nav>
+
+    <header class="header-wrapper" id="navbar">
+        <div class="header-left">
+            <div class="logo-group">
+                <img src="C:\Users\Admin\Documents\Web\images\index\Asset 1@3x.png" alt="SHL Logo">
+                <div class="logo-text-box"><span class="logo-main">smART hub</span><span class="logo-sub">living labs.</span></div>
+            </div>
+        </div>
+        <div class="header-center">
+            <nav class="nav-pill">
+                <a href="#hero">Home</a>
+                <a href="#about">About</a>
+                <a href="#events">Events</a>
+                <a href="#workspace">Workspace</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+        <div class="header-right"><div class="search-box"><input type="text" placeholder="Search..."><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div></div>
+    </header>
+
+    <section class="page-section" id="hero">
+        <div class="hero-slide active">
+            <p class="reveal delay-1" style="letter-spacing: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; color: white;">Highlight 01</p>
+            <h1 class="hero-title reveal delay-2">smART Hub</h1>
+            <p class="reveal delay-3" style="font-size: 20px; font-style: italic; opacity: 0.9; color: white;">Closing of the season</p>
+        </div>
+        <div class="hero-slide">
+            <p style="letter-spacing: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; color: white;">Highlight 02</p>
+            <h1 class="hero-title">Digital Twin</h1>
+            <p style="font-size: 20px; font-style: italic; color: white;">Towards Net Zero Campus</p>
+        </div>
+        <div class="hero-slide">
+            <p style="letter-spacing: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; color: white;">Highlight 03</p>
+            <h1 class="hero-title">Urban Analytics</h1>
+            <p style="font-size: 20px; font-style: italic; color: white;">Decoding the City through Data</p>
+        </div>
+        <div class="hero-slide">
+            <p style="letter-spacing: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; color: white;">Highlight 04</p>
+            <h1 class="hero-title">Inclusive Design</h1>
+            <p style="font-size: 20px; font-style: italic; color: white;">Architecture for Everyone</p>
+        </div>
+        <div class="hero-slide">
+            <p style="letter-spacing: 10px; text-transform: uppercase; opacity: 0.8; margin-bottom: 10px; color: white;">Highlight 05</p>
+            <h1 class="hero-title">Green Lab</h1>
+            <p style="font-size: 20px; font-style: italic; color: white;">Prototyping Sustainable Futures</p>
+        </div>
+        <div class="dot-nav">
+            <div class="dot active" onclick="setSlide(0)"></div>
+            <div class="dot" onclick="setSlide(1)"></div>
+            <div class="dot" onclick="setSlide(2)"></div>
+            <div class="dot" onclick="setSlide(3)"></div>
+            <div class="dot" onclick="setSlide(4)"></div>
+        </div>
+        <div class="bounce-arrow"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg></div>
+    </section>
+
+    <section class="page-section" id="about">
+        <div class="blob-bg"><div class="blob" style="width: 500px; height: 500px; background: var(--color-teal); top: 5%; right: 5%;"></div></div>
+        <div class="content-limit">
+            <h2 class="section-title reveal">About smART Hub</h2>
+            <div class="grid-2">
+                <div class="content-p reveal delay-1">
+                    smART Hub is a Living Labs ecosystem — an intersection where the boldest ideas in technology, policy, and art are taken off the page to “live” and “breathe” in real-world contexts. It is where four streams — University – Government – Business – Community — converge to collaboratively decode complex urban challenges.
+                </div>
+                <div class="reveal delay-2" style="font-style: italic; border-left: 3px solid var(--color-deep); padding-left: 30px; color: var(--color-deep); font-size: 16px;">
+                    "On its journey to becoming a multidisciplinary and sustainable university, UEH does not stop at academic theories. The smART Hub Living Labs was established as a declaration of transformation."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="consortium">
+        <div class="blob-bg"><div class="blob" style="width: 550px; height: 550px; background: var(--color-deep); bottom: -5%; left: -5%;"></div></div>
+        <div class="content-limit">
+            <h2 class="section-title reveal">Consortium</h2>
+            <div class="grid-2">
+                <div class="reveal delay-1">
+                    <p style="font-weight: 700; margin-bottom: 10px;">⟶ Members</p>
+                    <p class="content-p" style="font-size: 14px;">
+                        <strong>Operation:</strong> Assoc. Prof. Dr. Trinh Tu Anh; MSc. Dang The Hien; Vo Dao Chi, PhD; Luu Pham Thanh Binh.<br><br>
+                        <strong>Research Partners:</strong> Dang Tri Dung, PhD; Do Tri Cuong, PhD.
+                    </p>
+                </div>
+                <div class="reveal delay-2">
+                    <p style="font-weight: 700; margin-bottom: 10px;">⟶ Press & Media</p>
+                    <p class="content-p" style="font-size: 14px; opacity: 0.8;">
+                        Material can be used freely provided that it is duly credited as a project by the MIT Senseable City Lab. senseable-press@mit.edu
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="publication">
+        <div class="blob-bg"><div class="blob" style="width: 600px; height: 600px; background: #4a634e; top: 10%; right: -5%;"></div></div>
+        <div class="content-limit">
+            <div class="header-row">
+                <h2 class="section-title reveal" style="margin:0;">Publication</h2>
+                <div class="reveal delay-1" style="display:flex; gap:10px;"><button class="btn-circle" onclick="movePub(-1)">❮</button><button class="btn-circle" onclick="movePub(1)">❯</button></div>
+            </div>
+            <div class="sidebar-layout">
+                <aside class="sidebar-nav reveal">
+                    <ul class="year-list">
+                        <li class="year-item active" onclick="filterPubs('2025', event)">2025</li>
+                        <li class="year-item" onclick="filterPubs('2024', event)">2024</li>
+                        <li class="year-item" onclick="filterPubs('2023', event)">2023</li>
+                    </ul>
+                </aside>
+                <main class="display-area">
+                    <div class="track" id="pubTrack">
+                        <div class="card"><h3>Data-Driven Nutritional Assessment of Urban Food Landscapes</h3><p>Scientific Reports, 2025</p></div>
+                        <div class="card"><h3>Determinants of individual food delivery choices</h3><p>Transportation Research Part C, 2025</p></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="events">
+        <div class="content-limit">
+            <div class="header-row">
+                <h2 class="section-title reveal" id="event-title" style="margin:0;">Coming events</h2>
+                <div class="reveal delay-1" style="display:flex; gap:10px;"><button class="btn-circle" onclick="moveEv(-1)">❮</button><button class="btn-circle" onclick="moveEv(1)">❯</button></div>
+            </div>
+            <div class="sidebar-layout">
+                <aside class="sidebar-nav reveal">
+                    <ul class="year-list">
+                        <li class="year-item active" onclick="filterEvents('coming', event)">Coming events</li>
+                        <li class="year-item" onclick="filterEvents('2026', event)">2026</li>
+                        <li class="year-item" onclick="filterEvents('2025', event)">2025</li>
+                        <li class="year-item" onclick="filterEvents('2024', event)">2024</li>
+                    </ul>
+                </aside>
+                <main class="display-area">
+                    <div class="track" id="evTrack">
+                        <div class="card"><h3>Workshop Net Zero</h3><p>Campus V - April 2026</p></div>
+                        <div class="card"><h3>Glocal Design Talk</h3><p>Main Hall - May 2026</p></div>
+                        <div class="card"><h3>Art for Inspiration</h3><p>Digital Lab - June 2026</p></div>
+                        <div class="card"><h3>Urban Data Hack</h3><p>UEH Hall - July 2026</p></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="package-detail">
+        <div class="content-limit">
+            <h2 class="section-title reveal">4 Package Workspace</h2>
+            <div class="detail-grid">
+                <div class="detail-item reveal delay-1">
+                    <h4>1. NSUP – "No Single-Use Plastic Journey"</h4>
+                    <p>A campaign to shift perceptions around plastic waste through The Zero Pledge commitment, built upon hai trụ cột chính: #ReduceForMore và #SortingForChange.</p>
+                </div>
+                <div class="detail-item reveal delay-2">
+                    <h4>2. Glocal Design</h4>
+                    <p>Applying the Glocal Toolkit to standardize local experiences and solutions into internationally adaptable models.</p>
+                </div>
+                <div class="detail-item reveal delay-3">
+                    <h4>3. Towards Net Zero</h4>
+                    <p>Developing the Digital Twin of Campus V for intelligent energy and emissions management.</p>
+                </div>
+                <div class="detail-item reveal delay-4">
+                    <h4>4. Art for Inspiration</h4>
+                    <p>Using art as a transformative tool that awakens emotion and makes sustainable lifestyles more desirable.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="workspace">
+        <div class="content-limit">
+            <h2 class="section-title reveal">Visual Workspace</h2>
+            <div class="workspace-grid">
+                <div class="ws-item-wf reveal delay-1">
+                    <a href="package1.html" style="text-decoration: none; color: inherit; display: contents;">
+                        <img src="C:\Users\Admin\Documents\Web\images\index\Package Icon\Package 1.png" class="package-icon">
+                        <div class="ws-label"><strong>Package 1</strong>No Single-use Plastic Journey</div>
+                    </a>
+                </div>
+                <div class="ws-item-wf reveal delay-2">
+                    <a href="package2.html" style="text-decoration: none; color: inherit; display: contents;">
+                        <img src="C:\Users\Admin\Documents\Web\images\index\Package Icon\Package 3.png" class="package-icon">
+                        <div class="ws-label"><strong>Package 2</strong>Glocal Design</div>
+                    </a>
+                </div>
+                <div class="ws-item-wf reveal delay-3">
+                    <a href="package3.html" style="text-decoration: none; color: inherit; display: contents;">
+                        <img src="C:\Users\Admin\Documents\Web\images\index\Package Icon\Package 3.png" class="package-icon">
+                        <div class="ws-label"><strong>Package 3</strong>Towards Net Zero</div>
+                    </a>
+                </div>
+                <div class="ws-item-wf reveal delay-4">
+                    <a href="package4.html" style="text-decoration: none; color: inherit; display: contents;">
+                        <img src="C:\Users\Admin\Documents\Web\images\index\Package Icon\Package 3.png" class="package-icon">
+                        <div class="ws-label"><strong>Package 4</strong>Art For All</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="page-section" id="contact">
+        <div class="content-limit">
+            <div class="footer-layout">
+                <div class="contact-info-col">
+                    <h2 class="section-title reveal" style="margin-bottom: 40px;">Contact</h2>
+                    <div class="reveal delay-1" style="line-height: 2.2; font-size: 15px;">
+                        <strong style="font-size: 18px; color: var(--color-deep);">smART HUB Living Labs</strong><br>
+                        UEH, Campus V 232/6 Vo Thi Sau,<br> Xuan Hoa Ward, Ho Chi Minh City.<br><br>
+                        <span style="opacity: 0.7;">T: +84 937 516 101</span><br>
+                        <span style="opacity: 0.7;">E: smarthub@ueh.edu.vn</span>
+                    </div>
+                </div>
+
+                <div class="newsletter-box">
+                    <h4 class="reveal">Stay Updated</h4>
+                    <p class="reveal delay-1">Subscribe to receive the latest updates, research, and event invitations from the smART Hub Living Labs ecosystem.</p>
+                    
+                    <form class="contact-form reveal delay-2">
+                        <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your name"></div>
+                        <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="Your phone number"></div>
+                        <div class="form-group full-width"><label>Email Address</label><input type="email" placeholder="email@example.com"></div>
+                        <button type="submit" class="btn-submit-large">Subscribe Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="logo-belt-wrapper reveal delay-3">
+            <div class="content-limit">
+                <div class="logo-belt">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo1.png" alt="L1">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo2.png" alt="L2">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo3.png" alt="L3">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo4.png" alt="L4">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo5.png" alt="L5">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo6.png" alt="L6">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo7.png" alt="L7">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo8.png" alt="L8">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo9.png" alt="L9">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo10.png" alt="L10">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo11.png" alt="L11">
+                    <img src="C:\Users\Admin\Documents\Web\images\index\logo12.png" alt="L12">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.onscroll = function() {
+            var header = document.getElementById("navbar");
+            if (window.pageYOffset > 50) header.classList.add("scrolled");
+            else header.classList.remove("scrolled");
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const sideDot = document.querySelector(`.side-dot[href="#${id}"]`);
+                const sideNav = document.getElementById('sideNav');
+
+                if (entry.isIntersecting) {
+                    entry.target.querySelectorAll('.reveal').forEach(el => {
+                        el.classList.remove('active');
+                        void el.offsetWidth;
+                        el.classList.add('active');
+                    });
+
+                    entry.target.querySelectorAll('.card').forEach(card => {
+                        card.classList.remove('appear');
+                        void card.offsetWidth;
+                        card.classList.add('appear');
+                    });
+
+                    document.querySelectorAll('.side-dot').forEach(d => d.classList.remove('active'));
+                    if(sideDot) sideDot.classList.add('active');
+                    if(['about', 'consortium', 'contact'].includes(id)) sideNav.classList.add('dark-mode');
+                    else sideNav.classList.remove('dark-mode');
+                } else {
+                    entry.target.querySelectorAll('.reveal').forEach(el => el.classList.remove('active'));
+                    entry.target.querySelectorAll('.card').forEach(card => card.classList.remove('appear'));
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.page-section').forEach(s => revealObserver.observe(s));
+
+        // Hero Slideshow
+        let sIdx = 0;
+        let slideTimer;
+        const slides = document.querySelectorAll(".hero-slide");
+        const dots = document.querySelectorAll(".dot");
+
+        function showSlides() {
+            slides.forEach(s => s.classList.remove("active"));
+            dots.forEach(d => d.classList.remove("active"));
+            sIdx++; if (sIdx > slides.length) sIdx = 1;
+            slides[sIdx-1].classList.add("active");
+            dots[sIdx-1].classList.add("active");
+            slideTimer = setTimeout(showSlides, 5000);
+        }
+
+        function setSlide(n) {
+            clearTimeout(slideTimer);
+            sIdx = n;
+            slides.forEach(s => s.classList.remove("active"));
+            dots.forEach(d => d.classList.remove("active"));
+            slides[sIdx].classList.add("active");
+            dots[sIdx].classList.add("active");
+            slideTimer = setTimeout(showSlides, 5000);
+        }
+        showSlides();
+
+        const pubData = {
+            '2025': [{t:"Data-Driven Nutritional Assessment of Urban Food Landscapes", p:"Scientific Reports, 2025"}, {t:"Determinants of individual food delivery choices", p:"Transportation Research Part C, 2025"}],
+            '2024': [{t:"Urban Science Policy Research", p:"SUTD Publishing, 2024"}],
+            '2023': [{t:"Pocket Park - Green Alley Design", p:"UEH Campus B, 2023"}]
+        };
+
+        const eventData = {
+            'coming': [{ title: "Workshop Net Zero", loc: "Campus V - April 2026" }, { title: "Glocal Design Talk", loc: "Main Hall - May 2026" }, { title: "Art for Inspiration", loc: "Digital Lab - June 2026" }, { title: "Urban Data Hack", loc: "UEH Hall - July 2026" }],
+            '2026': [{ title: "Eco-Corridor Hue Research", loc: "Hue City - Feb 2026" }],
+            '2025': [{ title: "Sustainable Urban Design Expo", loc: "Campus N - Oct 2025" }],
+            '2024': [{ title: "Inclusive Smart City Forum", loc: "UEH Hall - Dec 2024" }]
+        };
+
+        function filterPubs(year, e) {
+            const track = document.getElementById('pubTrack');
+            document.querySelectorAll('#publication .year-item').forEach(i => i.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            const data = pubData[year] || [];
+            track.innerHTML = data.map((p, i) => `<div class="card" style="transition-delay:${i*0.1}s"><h3>${p.t}</h3><p>${p.p}</p></div>`).join('');
+            setTimeout(() => { track.querySelectorAll('.card').forEach(c => c.classList.add('appear')); }, 50);
+            pPos = 0; track.style.transform = `translateX(0)`;
+        }
+
+        function filterEvents(key, e) {
+            const track = document.getElementById('evTrack');
+            const title = document.getElementById('event-title');
+            title.innerText = (key === 'coming') ? "Coming events" : "Events in " + key;
+            document.querySelectorAll('#events .year-item').forEach(i => i.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            const data = eventData[key] || [];
+            track.innerHTML = data.map((ev, i) => `<div class="card" style="transition-delay:${i*0.1}s"><h3>${ev.title}</h3><p>${ev.loc}</p></div>`).join('');
+            setTimeout(() => { track.querySelectorAll('.card').forEach(c => c.classList.add('appear')); }, 50);
+            ePos = 0; track.style.transform = `translateX(0)`;
+        }
+
+        let ePos = 0, pPos = 0;
+        function moveEv(dir) { 
+            const t = document.getElementById('evTrack'); 
+            const cards = t.querySelectorAll('.card').length;
+            ePos += dir; if(ePos < 0) ePos = 0; if(ePos > cards - 1) ePos = cards - 1;
+            t.style.transform = `translateX(-${ePos * 260}px)`; 
+        }
+        function movePub(dir) { 
+            const t = document.getElementById('pubTrack'); 
+            const cards = t.querySelectorAll('.card').length;
+            pPos += dir; if(pPos < 0) pPos = 0; if(pPos > cards - 1) pPos = cards - 1;
+            t.style.transform = `translateX(-${pPos * 260}px)`; 
+        }
+
+        window.onload = () => {
+            document.querySelectorAll('.track .card').forEach(c => c.classList.add('appear'));
+        }
+    </script>
+</body>
+</html>
