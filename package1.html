@@ -95,7 +95,7 @@
         .split-content h2 { font-size: 32px; color: var(--pkg-gold); margin-bottom: 20px; font-weight: 800; text-transform: uppercase; }
         .split-content p { font-size: 14px; line-height: 1.6; color: var(--pkg-blue); margin-bottom: 20px; text-align: justify; }
 
-        /* MARQUEE - TỐC ĐỘ ĐÃ ĐƯỢC CHỈNH CHẬM LẠI (60s) */
+        /* MARQUEE */
         #events { overflow: visible; background: #fff; }
         .marquee-container { display: flex; width: 100%; overflow: visible; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); padding: 60px 0; }
         .marquee-content { display: flex; gap: 25px; animation: scrollInfinite 60s linear infinite; }
@@ -136,7 +136,6 @@
         .about-content { font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.8; color: #555; }
         .pub-item { margin-bottom: 25px; text-align: justify; }
         .pub-item a { color: var(--pkg-blue); text-decoration: underline; font-weight: 500; }
-        .press-link { display: block; margin-bottom: 10px; color: var(--pkg-blue); font-weight: 600; text-decoration: underline; }
         .people-names b { display: block; font-size: 14px; color: #333; margin-bottom: 4px; }
         .dept-info { font-size: 12px; color: #777; font-style: italic; line-height: 1.4; display: block; margin-top: 8px; }
         .org-info { margin-top: 40px; font-size: 13px; color: var(--pkg-blue); font-weight: 700; line-height: 1.5; }
@@ -253,7 +252,7 @@
                 </div>
                 <div class="split-content" data-aos="fade-left">
                     <h2>PLATFORM FOR GREEN FAIR</h2>
-                    <p>Building a sustainable community through green exchange platforms and plastic-free initiatives. NSUP – "No Single-Use Plastic Journey".</p>
+                    <p>Building a sustainable community through green exchange platforms and plastic-free initiatives.</p>
                     <div class="qr-group" data-aos="zoom-in" data-aos-delay="300">
                         <div class="qr-code" style="width: 80px;"><img src="images/package1/qr-code.png" alt="QR" style="width:100%"></div>
                         <div class="qr-links">UEH Campus V<br><a href="mailto:smarthub@ueh.edu.vn" style="color:var(--pkg-blue); text-decoration:none; font-weight:600">smarthub@ueh.edu.vn</a></div>
@@ -293,7 +292,7 @@
                     <div class="action-pile-card" style="background:var(--action-green)" onclick="zoomAction(this)"><img src="images/package2/2@3x.png"></div>
                     <div class="action-pile-card" style="background:var(--action-yellow)" onclick="zoomAction(this)"><img src="images/package2/3@3x.png"></div>
                     <div class="action-pile-card" style="background:var(--action-orange)" onclick="zoomAction(this)"><img src="images/package2/4@3x.png"></div>
-                    <div class="action-pile-card" style="background:var(--action-green)" onclick="zoomAction(this)"><img src="images/package2/2@3x.png"></div>
+                    <div class="action-pile-card" style="background:var(--action-green)" onclick="zoomAction(this)"><img src="images/package2/5@3x.png"></div>
                     <div class="action-pile-card" style="background:var(--action-yellow)" onclick="zoomAction(this)"><img src="images/package2/6@3x.png"></div>
                     <div class="action-pile-card" style="background:var(--action-orange)" onclick="zoomAction(this)"><img src="images/package2/7@3x.png"></div>
                     <div class="action-pile-card" style="background:var(--action-green)" onclick="zoomAction(this)"><img src="images/package2/8@3x.png"></div>
@@ -306,10 +305,10 @@
             <div class="split-container">
                 <div class="split-content" data-aos="fade-right">
                     <h2>GO GREEN STATION</h2>
-                    <p>A campaign to shift perceptions around plastic waste through The Zero Pledge commitment, built upon hai trụ cột chính: #ReduceForMore and #SortingForChange.</p>
+                    <p>A campaign to shift perceptions around plastic waste through The Zero Pledge commitment.</p>
                     <div class="qr-group" data-aos="zoom-in" data-aos-delay="200">
                         <div class="qr-code" style="width: 80px;"><img src="images/package1/qr-code.png" alt="QR" style="width:100%"></div>
-                        <div class="qr-links">Link: <a href="https://greencampus.ueh.edu.vn/">UEH Green Campus</a><br>Mail: <a href="mailto:smarthub@ueh.edu.vn">smarthub@ueh.edu.vn</a></div>
+                        <div class="qr-links">Link: <a href="https://greencampus.ueh.edu.vn/" target="_blank">UEH Green Campus</a><br>Mail: <a href="mailto:smarthub@ueh.edu.vn">smarthub@ueh.edu.vn</a></div>
                     </div>
                 </div>
                 <div class="split-image" data-aos="fade-left">
@@ -359,9 +358,6 @@
                         <div class="org-info">smART HUB Living Labs<br><span>UEH University</span></div>
                     </div>
                 </div>
-                <div class="about-column" data-aos="fade-up" data-aos-delay="300">
-                    <h3>Publication</h3>
-                </div>
             </div>
         </section>
 
@@ -388,13 +384,8 @@
     <script>
         AOS.init({ duration: 1000, once: true, offset: 120, easing: 'ease-in-out' });
 
-        // SMOOTH SCROLL TO TOP
         function scrollToTop() {
-            const currentPos = document.documentElement.scrollTop || document.body.scrollTop;
-            if (currentPos > 0) {
-                window.requestAnimationFrame(scrollToTop);
-                window.scrollTo(0, currentPos - (currentPos / 25) - 1);
-            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function openGlobalLB(img) {
